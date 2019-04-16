@@ -90,178 +90,261 @@
 /*!**********************!*\
   !*** ./src/entry.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-const canvas = document.getElementById("myCanvas");
-const ctx = canvas.getContext("2d");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
 
-// var ballRadius = 10;
+document.addEventListener("DOMContentLoaded", () => {
+  const game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]();
+  game.startGame();
+});
 
-// var x = canvas.width / 2;
-// var y = canvas.height - 20;
-// // add value to x and y after every frame
-// var dx = 2;
-// var dy = -2;
 
-// var paddleHeight = 10;
-// var paddleWidth = 75;
-// var paddleX = (canvas.width - paddleWidth) / 2;
+/***/ }),
 
-// var rightPressed = false;
-// var leftPressed = false;
+/***/ "./src/game.js":
+/*!*********************!*\
+  !*** ./src/game.js ***!
+  \*********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// var brickRowCount = 3;
-// var brickColumnCount = 5;
-// var brickWidth = 75;
-// var brickHeight = 20;
-// var brickPadding = 10;
-// var brickOffsetTop = 30;
-// var brickOffsetLeft = 30;
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _gamearea__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gamearea */ "./src/gamearea.js");
 
-// var score = 0;
+class Game {
+  constructor() {
+    this.gamearea = new _gamearea__WEBPACK_IMPORTED_MODULE_0__["default"]();
+  }
+  //get audio
+  //   var audio = document.getElementById("audio");
+  //   var audio1 = document.getElementById("audio1")
+  startGame() {
+    this.gamearea.start();
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (Game);
 
-// var bricks = [];
-// for (var c = 0; c < brickColumnCount; c++) {
-//   bricks[c] = [];
-//   for (var r = 0; r < brickRowCount; r++) {
-//     bricks[c][r] = { x: 0, y: 0, status: 1 };
-//   }
-// }
 
-// document.addEventListener("keydown", keyDownHandler, false);
-// document.addEventListener("keyup", keyUpHandler, false);
-// document.addEventListener("mousemove", mouseMoveHandler, false);
+/***/ }),
 
-// function keyDownHandler(e) {
-//   if (e.key == "Right" || e.key == "ArrowRight") {
-//     rightPressed = true;
-//   } else if (e.key == "Left" || e.key == "ArrowLeft") {
-//     leftPressed = true;
-//   }
-// }
+/***/ "./src/gamearea.js":
+/*!*************************!*\
+  !*** ./src/gamearea.js ***!
+  \*************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// function keyUpHandler(e) {
-//   if (e.key == "Right" || e.key == "ArrowRight") {
-//     rightPressed = false;
-//   } else if (e.key == "Left" || e.key == "ArrowLeft") {
-//     leftPressed = false;
-//   }
-// }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _obstacles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./obstacles */ "./src/obstacles.js");
+/* harmony import */ var _player__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./player */ "./src/player.js");
 
-// function mouseMoveHandler(e) {
-//   var relativeX = e.clientX - canvas.offsetLeft;
-//   if (relativeX > 0 && relativeX < canvas.width) {
-//     paddleX = relativeX - paddleWidth / 2;
-//   }
-// }
 
-// function collisionDetection() {
-//   for (var c = 0; c < brickColumnCount; c++) {
-//     for (var r = 0; r < brickRowCount; r++) {
-//       var b = bricks[c][r];
-//       if (b.status == 1) {
-//         if (
-//           x > b.x &&
-//           x < b.x + brickWidth &&
-//           y > b.y &&
-//           y < b.y + brickHeight
-//         ) {
-//           dy = -dy;
-//           b.status = 0;
-//           score++;
-//           if (score == brickRowCount * brickColumnCount) {
-//             alert("YOU WIN, CONGRATULATIONS!");
-//             document.location.reload();
-//             //   clearInterval(interval);
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
-// function drawBall() {
-//   ctx.beginPath();
-//   ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-//   ctx.fillStyle = "#0095DD";
-//   ctx.fill();
-//   ctx.closePath();
-// }
+class Gamearea {
+  constructor() {
+    this.canvas = document.getElementById("myCanvas");
+    //start is intial actions
+    this.minGap = 200;
+    this.maxGap = 500;
+    //add Array of obs
+    this.myObstacles = [];
+    this.gap = this.randGap();
+    this.start = this.start.bind(this);
+    this.updateGameArea = this.updateGameArea.bind(this);
+  }
+  start() {
+    this.canvas.height = 500;
+    this.canvas.width = 1200;
 
-// function drawPaddle() {
-//   ctx.beginPath();
-//   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-//   ctx.fillStyle = "#0095DD";
-//   ctx.fill();
-//   ctx.closePath();
-// }
-// function drawBricks() {
-//   for (var c = 0; c < brickColumnCount; c++) {
-//     for (var r = 0; r < brickRowCount; r++) {
-//       if (bricks[c][r].status == 1) {
-//         var brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
-//         var brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-//         bricks[c][r].x = brickX;
-//         bricks[c][r].y = brickY;
-//         ctx.beginPath();
-//         ctx.rect(brickX, brickY, brickWidth, brickHeight);
-//         ctx.fillStyle = "#0095DD";
-//         ctx.fill();
-//         ctx.closePath();
-//       }
-//     }
-//   }
-// }
+    this.context = this.canvas.getContext("2d");
+    this.player = new _player__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
+    //frame counts how many times 'update gamearea' is ran
+    this.frame = 0;
+    //add score count
+    // this.score = 0;
 
-// function drawScore() {
-//   ctx.font = "16px Arial";
-//   ctx.fillStyle = "#0095DD";
-//   ctx.fillText("Score: " + score, 8, 20);
-// }
+    //give inital value of score
+    // scoreText.update("Score: 0");
+    //execute "updateGameArea" every 5 ms
+    this.interval = setInterval(this.updateGameArea, 5);
+    //listener to handle the event of pressing a key in the keyboard
+  }
+  everyinterval(n) {
+    //if frame is a multiple of 'n' we send true
+    if (this.frame % n === 0) return true;
+    return false;
+  }
+  updateGameArea() {
+    //check for a crash
+    for (let i = 0; i < this.myObstacles.length; i++) {
+      if (this.player.crashWidth(this.myObstacles[i])) {
+        this.stop();
+        //exit updateGameArea
+        return;
+      }
+    }
+    //clear game area before each new drawings
+    this.clear();
+    //add more obs
+    //After every 150times running 'updateGameArea'
+    if (this.everyinterval(this.gap)) {
+      this.myObstacles.push(new _obstacles__WEBPACK_IMPORTED_MODULE_0__["default"](this));
+      //update gap after each bew added obs
+      this.gap = this.randGap();
+      //reset frame value
+      this.frame = 0;
+    }
+    for (let i = 0; i < this.myObstacles.length; i++) {
+      //update the obs (x) every time
+      this.myObstacles[i].x -= 1;
+      this.myObstacles[i].draw();
+    }
+    this.player.newPos();
+    this.player.update();
+    this.frame += 1;
+    //update score
+    // this.score += 0.01;
+    // scoreText.update("Score: " + Math.floor(gamearea.score));
+  }
+  //define everyinterval
+  clear() {
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+  stop() {
+    clearInterval(this.interval);
+    alert("Game Over");
+    // audio1.play();
+  }
+  randGap() {
+    return Math.floor(
+      this.minGap + Math.random() * (this.maxGap - this.minGap + 1)
+    );
+  }
+}
+/* harmony default export */ __webpack_exports__["default"] = (Gamearea);
 
-// function draw() {
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
-//   drawBricks();
-//   drawBall();
-//   drawPaddle();
-//   collisionDetection();
-//   drawScore();
 
-//   if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-//     dx = -dx;
-//   }
+/***/ }),
 
-//   if (y + dy < ballRadius) {
-//     dy = -dy;
-//   } else if (y + dy > canvas.height - ballRadius) {
-//     if (x > paddleX && x < paddleX + paddleWidth) {
-//       dy = -dy;
-//     } else {
-//       alert("GAME OVER");
-//       document.location.reload();
-//       // clearInterval(interval); //needed from Chrome to end game
-//     }
-//   }
+/***/ "./src/obstacles.js":
+/*!**************************!*\
+  !*** ./src/obstacles.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-//   if (rightPressed && paddleX < canvas.width - paddleWidth) {
-//     paddleX += 7;
-//   } else if (leftPressed && paddleX > 0) {
-//     paddleX -= 7;
-//   }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Obstacles {
+  constructor(gamearea) {
+    this.gamearea = gamearea;
+    this.minHeight = 20;
+    this.maxHeight = 100;
+    this.minWidth = 10;
+    this.maxWidth = 20;
+    this.colors = [
+      "black",
+      "red",
+      "green",
+      "yellow",
+      "gray",
+      "pink",
+      "purple",
+      "chocolate"
+    ];
+    this.height = Math.floor(
+      this.minHeight + Math.random() * (this.maxHeight - this.minHeight + 1)
+    );
+    this.width = Math.floor(
+      this.minWidth + Math.random() * (this.maxWidth - this.minWidth + 1)
+    );
+    this.x = 1200;
+    this.y = this.gamearea.canvas.height - this.height;
+    //generate random index
+    this.index = Math.floor(Math.random() * this.colors.length);
+    //now we get the random color
+    this.color = this.colors[this.index];
+    //draw the obstacles
+  }
 
-//   x += dx;
-//   y += dy;
-//   //   requestAnimationFrame(draw);
-// }
+  draw() {
+    this.gamearea.context.fillStyle = this.color;
+    this.gamearea.context.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+//drawing obstacles with random height, width, and coordinates
+//obs height and width is random value btw minHeight and maxHeight/ minWidth and maxWidth
+//gap btw 2 obs are random value btw minGap and maxGap
 
-// //   setInterval(draw, 7);
-// //   const interval = setInterval(draw, 10);
-// draw();
+/* harmony default export */ __webpack_exports__["default"] = (Obstacles);
 
-function startGame() {}
 
-const gamearea = {};
+/***/ }),
+
+/***/ "./src/player.js":
+/*!***********************!*\
+  !*** ./src/player.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Player {
+  constructor(context) {
+    this.context = context;
+    this.x = 100;
+    this.y = 470;
+    //make it jump
+    this.speedY = 0;
+    window.addEventListener("keydown", this.jump.bind(this));
+  }
+  //jumping is a changing of y-pos upward until reaching a given peak, then coming back down
+  jump() {
+    this.speedY = -2;
+    //play the audio in the 'jump' function
+    // audio.play();
+  }
+  //draw the player
+  update() {
+    //dye the 'player' black otherwise it will be gray
+    this.context.fillStyle = "indigo";
+    this.context.fillRect(this.x, this.y, 30, 30);
+  }
+  newPos() {
+    //it goes down if it 'y' reaches 280
+    if (this.y < 280) {
+      this.speedY = 2;
+    }
+    this.y = this.y + this.speedY;
+
+    //it stops going down if it reaches 470
+    if (this.speedY === 2 && this.y === 470) {
+      this.speedY = 0;
+    }
+  }
+
+  //crash happens when the coordinates of the player and the obs overlap
+
+  crashWidth(obs) {
+    if (
+      this.x + 30 > obs.x &&
+      this.x < obs.x + obs.width &&
+      this.y + 30 > obs.y
+    ) {
+      return true;
+    }
+    return false;
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Player);
 
 
 /***/ })
