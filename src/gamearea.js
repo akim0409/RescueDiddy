@@ -14,8 +14,8 @@ class Gamearea {
     this.updateGameArea = this.updateGameArea.bind(this);
   }
   start() {
-    this.canvas.height = 500;
-    this.canvas.width = 1200;
+    this.canvas.height = 400;
+    this.canvas.width = 800;
 
     this.context = this.canvas.getContext("2d");
     this.player = new Player(this.context);

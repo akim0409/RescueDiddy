@@ -1,0 +1,26 @@
+body {
+  background-image: url("../images/background.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-attachment: fixed;
+  font-family: "kongtext";
+}
+
+canvas {
+  position: relative;
+  background: lightblue url(../images/canvas.png) repeat-x;
+  background-size: cover;
+  -webkit-animation: slide 9s linear infinite;
+  display: block;
+  margin: 0 auto;
+}
+
+@-webkit-keyframes slide {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -1517px 0;
+  }
+}
