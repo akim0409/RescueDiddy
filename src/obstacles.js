@@ -31,6 +31,7 @@ class Obstacles {
   }
 
   draw() {
+    // this.ctx.clearRect(this.x, this.y, this.width, this.height);
     this.gamearea.context.fillStyle = this.color;
     this.gamearea.context.fillRect(this.x, this.y, this.width, this.height);
   }

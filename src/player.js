@@ -2,7 +2,7 @@ class Player {
   constructor(context) {
     this.ctx = context;
     this.x = 0;
-    this.y = 0;
+    this.y = 441;
     this.jumping = false;
     this.runSprite = new Image();
     this.runSprite.src = "./assets/images/run.png";
@@ -16,28 +16,47 @@ class Player {
     this.vel = 0;
     this.currentFrame = 0;
     //make it jump
-    this.speedY = 0;
     this.draw = this.draw.bind(this);
     this.startAnimating();
     this.update = this.update.bind(this);
-    window.addEventListener("keydown", this.jump.bind(this));
+    document.addEventListener("keydown", this.jump.bind(this));
   }
 
   //  let srcX;
   // let xrcY;
 
   jump() {
-    const gravity = 0.25;
-    const bottomY = 280;
-    if (this.jumping) {
-      if (this.y <= bottomY) {
-        this.vel += gravity;
-        this.y += this.vel;
-      } else {
-        this.y = bottomY;
-        this.vel = 0;
-        this.jumping = false;
-      }
+    if (this.jumping === false) {
+      this.jumping = true;
+      const id = setInterval(() => {
+        if (this.y >= 280) {
+          this.y -= 1;
+        } else {
+          const id2 = setInterval(() => {
+            if (this.y <= 441) {
+              this.y += 1;
+            } else {
+              clearInterval(id2);
+              this.jumping = false;
+            }
+          });
+          clearInterval(id);
+        }
+      }, 1);
+
+      // debugger;
+      // const gravity = 0.25;
+      // const bottomY = 280;
+      // if (!this.jumping) {
+      //   if (this.y <= bottomY) {
+      //     this.vel += gravity;
+      //     this.y += this.vel;
+      //   } else {
+      //     this.y = bottomY;
+      //     this.vel = 0;
+      //     this.jumping = false;
+      //   }
+      // }
     }
   }
 
@@ -59,7 +78,7 @@ class Player {
 
     if (elapsed > this.fpsInterval) {
       this.update();
-      this.ctx.clearRect(0, 441, this.runWidth, this.runHeight);
+      this.ctx.clearRect(this.x, 0, this.runWidth, 1000);
       this.then = now - (elapsed % this.fpsInterval);
       this.ctx.drawImage(
         this.runSprite,
@@ -67,8 +86,8 @@ class Player {
         this.srcY,
         this.runWidth,
         this.runHeight,
-        0,
-        441,
+        this.x,
+        this.y,
         this.runWidth,
         this.runHeight
       );
@@ -81,19 +100,6 @@ class Player {
     this.then = Date.now();
     this.startTime = this.then;
     this.draw();
-  }
-
-  newPos() {
-    //it goes down if it 'y' reaches 280
-    if (this.y < 280) {
-      this.speedY = 2;
-    }
-    this.y = this.y + this.speedY;
-
-    //it stops going down if it reaches 470
-    if (this.speedY === 2 && this.y === 470) {
-      this.speedY = 0;
-    }
   }
 
   //crash happens when the coordinates of the player and the obs overlap

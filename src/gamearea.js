@@ -13,6 +13,7 @@ class Gamearea {
     this.gap = this.randGap();
     this.start = this.start.bind(this);
     this.updateGameArea = this.updateGameArea.bind(this);
+    this.jump = this.jump.bind(this);
     // this.render = this.render.bind(this);
   }
   start() {
@@ -48,7 +49,8 @@ class Gamearea {
       }
     }
     //clear game area before each new drawings
-    // this.clear();
+    this.clear();
+
     //add more obs
     //After every 150times running 'updateGameArea'
     // this.player.draw();
@@ -64,13 +66,20 @@ class Gamearea {
       this.myObstacles[i].x -= 1;
       this.myObstacles[i].draw();
     }
-    this.player.newPos();
     this.player.update();
     this.frame += 1;
     //update score
     // this.score += 0.01;
     // scoreText.update("Score: " + Math.floor(gamearea.score));
   }
+
+  jump(e) {
+    if (e.code === "Space") {
+      e.preventDefault();
+      this.player.toggleJump();
+    }
+  }
+
   //define everyinterval
   clear() {
     this.context.clearRect(0, 0, this.width, this.height);
