@@ -49,7 +49,7 @@ class Gamearea {
       }
     }
     //clear game area before each new drawings
-    this.clear();
+    // this.clear();
 
     //add more obs
     //After every 150times running 'updateGameArea'
