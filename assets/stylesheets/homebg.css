@@ -8,19 +8,19 @@ body {
 }
 
 canvas {
-  position: relative;
-  background: lightblue url(../images/canvas.png) repeat-x;
-  background-size: cover;
-  -webkit-animation: slide 9s linear infinite;
   display: block;
+  position: relative;
+  background: url(../images/canvas.png), url(../images/farbg.jpg) repeat-x;
+  background-size: cover;
+  -webkit-animation: slide 5s linear infinite;
   margin: 0 auto;
 }
 
 @-webkit-keyframes slide {
   from {
-    background-position: 0 0;
+    background-position: 173.5px 0;
   }
   to {
-    background-position: -1517px 0;
+    background-position: -1187px 0;
   }
 }

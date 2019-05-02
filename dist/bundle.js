@@ -98,7 +98,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _game__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game */ "./src/game.js");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"]();
+  const canvas = document.getElementById("myCanvas");
+  canvas.width = 1200;
+  canvas.height = 500;
+  const ctx = canvas.getContext("2d");
+
+  const game = new _game__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
   game.startGame();
 });
 
@@ -117,8 +122,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _gamearea__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gamearea */ "./src/gamearea.js");
 
 class Game {
-  constructor() {
-    this.gamearea = new _gamearea__WEBPACK_IMPORTED_MODULE_0__["default"]();
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.gamearea = new _gamearea__WEBPACK_IMPORTED_MODULE_0__["default"](ctx);
   }
   //get audio
   //   var audio = document.getElementById("audio");
@@ -147,9 +153,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Gamearea {
-  constructor() {
-    this.canvas = document.getElementById("myCanvas");
+  constructor(ctx) {
+    // this.canvas = document.getElementById("myCanvas");
     //start is intial actions
+    this.context = ctx;
     this.minGap = 200;
     this.maxGap = 500;
     //add Array of obs
@@ -157,12 +164,13 @@ class Gamearea {
     this.gap = this.randGap();
     this.start = this.start.bind(this);
     this.updateGameArea = this.updateGameArea.bind(this);
+    // this.render = this.render.bind(this);
   }
   start() {
-    this.canvas.height = 400;
-    this.canvas.width = 800;
+    this.height = 500;
+    this.width = 1200;
 
-    this.context = this.canvas.getContext("2d");
+    // this.context = this.canvas.getContext("2d");
     this.player = new _player__WEBPACK_IMPORTED_MODULE_1__["default"](this.context);
     //frame counts how many times 'update gamearea' is ran
     this.frame = 0;
@@ -173,6 +181,7 @@ class Gamearea {
     // scoreText.update("Score: 0");
     //execute "updateGameArea" every 5 ms
     this.interval = setInterval(this.updateGameArea, 5);
+    // this.render();
     //listener to handle the event of pressing a key in the keyboard
   }
   everyinterval(n) {
@@ -190,9 +199,10 @@ class Gamearea {
       }
     }
     //clear game area before each new drawings
-    this.clear();
+    // this.clear();
     //add more obs
     //After every 150times running 'updateGameArea'
+    // this.player.draw();
     if (this.everyinterval(this.gap)) {
       this.myObstacles.push(new _obstacles__WEBPACK_IMPORTED_MODULE_0__["default"](this));
       //update gap after each bew added obs
@@ -214,7 +224,8 @@ class Gamearea {
   }
   //define everyinterval
   clear() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.clearRect(0, 0, this.width, this.height);
+    // this.player.draw();
   }
   stop() {
     clearInterval(this.interval);
@@ -226,6 +237,12 @@ class Gamearea {
       this.minGap + Math.random() * (this.maxGap - this.minGap + 1)
     );
   }
+
+  // render() {
+  //   // debugger;
+  //   this.player.draw();
+  //   window.requestAnimationFrame(this.render);
+  // }
 }
 /* harmony default export */ __webpack_exports__["default"] = (Gamearea);
 
@@ -265,7 +282,7 @@ class Obstacles {
       this.minWidth + Math.random() * (this.maxWidth - this.minWidth + 1)
     );
     this.x = 1200;
-    this.y = this.gamearea.canvas.height - this.height;
+    this.y = this.gamearea.height - this.height;
     //generate random index
     this.index = Math.floor(Math.random() * this.colors.length);
     //now we get the random color
@@ -298,25 +315,89 @@ class Obstacles {
 __webpack_require__.r(__webpack_exports__);
 class Player {
   constructor(context) {
-    this.context = context;
-    this.x = 100;
-    this.y = 470;
+    this.ctx = context;
+    this.x = 0;
+    this.y = 0;
+    this.jumping = false;
+    this.runSprite = new Image();
+    this.runSprite.src = "./assets/images/run.png";
+    this.frameCount = 19;
+    this.runWidth = 1425 / this.frameCount;
+    this.runHeight = 59;
+    this.jumpSprite = new Image();
+    this.jumpSprite.src = "./assets/images/jump.png";
+    this.jumpWidth = 48 / this.frameCount;
+    this.jumpHeight = 80;
+    this.vel = 0;
+    this.currentFrame = 0;
     //make it jump
     this.speedY = 0;
+    this.draw = this.draw.bind(this);
+    this.startAnimating();
+    this.update = this.update.bind(this);
     window.addEventListener("keydown", this.jump.bind(this));
   }
-  //jumping is a changing of y-pos upward until reaching a given peak, then coming back down
+
+  //  let srcX;
+  // let xrcY;
+
   jump() {
-    this.speedY = -2;
-    //play the audio in the 'jump' function
-    // audio.play();
+    const gravity = 0.25;
+    const bottomY = 280;
+    if (this.jumping) {
+      if (this.y <= bottomY) {
+        this.vel += gravity;
+        this.y += this.vel;
+      } else {
+        this.y = bottomY;
+        this.vel = 0;
+        this.jumping = false;
+      }
+    }
   }
-  //draw the player
+
+  toggleJump() {
+    if (!this.jumping) {
+      this.jumping = true;
+      this.vel = -8;
+    }
+  }
   update() {
-    //dye the 'player' black otherwise it will be gray
-    this.context.fillStyle = "indigo";
-    this.context.fillRect(this.x, this.y, 30, 30);
+    this.currentFrame = ++this.currentFrame % this.frameCount;
+    this.srcX = this.currentFrame * this.runWidth;
+    this.srcY = 0;
   }
+
+  draw() {
+    const now = Date.now();
+    const elapsed = now - this.then;
+
+    if (elapsed > this.fpsInterval) {
+      this.update();
+      this.ctx.clearRect(0, 441, this.runWidth, this.runHeight);
+      this.then = now - (elapsed % this.fpsInterval);
+      this.ctx.drawImage(
+        this.runSprite,
+        this.srcX,
+        this.srcY,
+        this.runWidth,
+        this.runHeight,
+        0,
+        441,
+        this.runWidth,
+        this.runHeight
+      );
+    }
+    window.requestAnimationFrame(this.draw);
+  }
+
+  startAnimating() {
+    this.fpsInterval = 1000 / 10;
+    this.then = Date.now();
+    this.startTime = this.then;
+    this.draw();
+  }
+
   newPos() {
     //it goes down if it 'y' reaches 280
     if (this.y < 280) {

@@ -22,7 +22,7 @@ class Obstacles {
       this.minWidth + Math.random() * (this.maxWidth - this.minWidth + 1)
     );
     this.x = 1200;
-    this.y = this.gamearea.canvas.height - this.height;
+    this.y = this.gamearea.height - this.height;
     //generate random index
     this.index = Math.floor(Math.random() * this.colors.length);
     //now we get the random color

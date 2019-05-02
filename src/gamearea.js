@@ -2,9 +2,10 @@ import Obstacle from "./obstacles";
 import Player from "./player";
 
 class Gamearea {
-  constructor() {
-    this.canvas = document.getElementById("myCanvas");
+  constructor(ctx) {
+    // this.canvas = document.getElementById("myCanvas");
     //start is intial actions
+    this.context = ctx;
     this.minGap = 200;
     this.maxGap = 500;
     //add Array of obs
@@ -12,12 +13,13 @@ class Gamearea {
     this.gap = this.randGap();
     this.start = this.start.bind(this);
     this.updateGameArea = this.updateGameArea.bind(this);
+    // this.render = this.render.bind(this);
   }
   start() {
-    this.canvas.height = 400;
-    this.canvas.width = 800;
+    this.height = 500;
+    this.width = 1200;
 
-    this.context = this.canvas.getContext("2d");
+    // this.context = this.canvas.getContext("2d");
     this.player = new Player(this.context);
     //frame counts how many times 'update gamearea' is ran
     this.frame = 0;
@@ -28,6 +30,7 @@ class Gamearea {
     // scoreText.update("Score: 0");
     //execute "updateGameArea" every 5 ms
     this.interval = setInterval(this.updateGameArea, 5);
+    // this.render();
     //listener to handle the event of pressing a key in the keyboard
   }
   everyinterval(n) {
@@ -45,9 +48,10 @@ class Gamearea {
       }
     }
     //clear game area before each new drawings
-    this.clear();
+    // this.clear();
     //add more obs
     //After every 150times running 'updateGameArea'
+    // this.player.draw();
     if (this.everyinterval(this.gap)) {
       this.myObstacles.push(new Obstacle(this));
       //update gap after each bew added obs
@@ -69,7 +73,8 @@ class Gamearea {
   }
   //define everyinterval
   clear() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.context.clearRect(0, 0, this.width, this.height);
+    // this.player.draw();
   }
   stop() {
     clearInterval(this.interval);
@@ -81,5 +86,11 @@ class Gamearea {
       this.minGap + Math.random() * (this.maxGap - this.minGap + 1)
     );
   }
+
+  // render() {
+  //   // debugger;
+  //   this.player.draw();
+  //   window.requestAnimationFrame(this.render);
+  // }
 }
 export default Gamearea;

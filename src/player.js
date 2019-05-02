@@ -1,24 +1,88 @@
 class Player {
   constructor(context) {
-    this.context = context;
-    this.x = 100;
-    this.y = 470;
+    this.ctx = context;
+    this.x = 0;
+    this.y = 0;
+    this.jumping = false;
+    this.runSprite = new Image();
+    this.runSprite.src = "./assets/images/run.png";
+    this.frameCount = 19;
+    this.runWidth = 1425 / this.frameCount;
+    this.runHeight = 59;
+    this.jumpSprite = new Image();
+    this.jumpSprite.src = "./assets/images/jump.png";
+    this.jumpWidth = 48 / this.frameCount;
+    this.jumpHeight = 80;
+    this.vel = 0;
+    this.currentFrame = 0;
     //make it jump
     this.speedY = 0;
+    this.draw = this.draw.bind(this);
+    this.startAnimating();
+    this.update = this.update.bind(this);
     window.addEventListener("keydown", this.jump.bind(this));
   }
-  //jumping is a changing of y-pos upward until reaching a given peak, then coming back down
+
+  //  let srcX;
+  // let xrcY;
+
   jump() {
-    this.speedY = -2;
-    //play the audio in the 'jump' function
-    // audio.play();
+    const gravity = 0.25;
+    const bottomY = 280;
+    if (this.jumping) {
+      if (this.y <= bottomY) {
+        this.vel += gravity;
+        this.y += this.vel;
+      } else {
+        this.y = bottomY;
+        this.vel = 0;
+        this.jumping = false;
+      }
+    }
   }
-  //draw the player
+
+  toggleJump() {
+    if (!this.jumping) {
+      this.jumping = true;
+      this.vel = -8;
+    }
+  }
   update() {
-    //dye the 'player' black otherwise it will be gray
-    this.context.fillStyle = "indigo";
-    this.context.fillRect(this.x, this.y, 30, 30);
+    this.currentFrame = ++this.currentFrame % this.frameCount;
+    this.srcX = this.currentFrame * this.runWidth;
+    this.srcY = 0;
   }
+
+  draw() {
+    const now = Date.now();
+    const elapsed = now - this.then;
+
+    if (elapsed > this.fpsInterval) {
+      this.update();
+      this.ctx.clearRect(0, 441, this.runWidth, this.runHeight);
+      this.then = now - (elapsed % this.fpsInterval);
+      this.ctx.drawImage(
+        this.runSprite,
+        this.srcX,
+        this.srcY,
+        this.runWidth,
+        this.runHeight,
+        0,
+        441,
+        this.runWidth,
+        this.runHeight
+      );
+    }
+    window.requestAnimationFrame(this.draw);
+  }
+
+  startAnimating() {
+    this.fpsInterval = 1000 / 10;
+    this.then = Date.now();
+    this.startTime = this.then;
+    this.draw();
+  }
+
   newPos() {
     //it goes down if it 'y' reaches 280
     if (this.y < 280) {

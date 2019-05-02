@@ -1,7 +1,8 @@
 import GameArea from "./gamearea";
 class Game {
-  constructor() {
-    this.gamearea = new GameArea();
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.gamearea = new GameArea(ctx);
   }
   //get audio
   //   var audio = document.getElementById("audio");
