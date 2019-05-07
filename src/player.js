@@ -30,11 +30,11 @@ class Player {
       this.jumping = true;
       const id = setInterval(() => {
         if (this.y >= 280) {
-          this.y -= 1;
+          this.y -= 1.5;
         } else {
           const id2 = setInterval(() => {
             if (this.y <= 441) {
-              this.y += 1;
+              this.y += 1.5;
             } else {
               clearInterval(id2);
               this.jumping = false;
@@ -60,12 +60,12 @@ class Player {
     }
   }
 
-  toggleJump() {
-    if (!this.jumping) {
-      this.jumping = true;
-      this.vel = -8;
-    }
-  }
+  // toggleJump() {
+  //   if (!this.jumping) {
+  //     this.jumping = true;
+  //     this.vel = -8;
+  //   }
+  // }
   update() {
     this.currentFrame = ++this.currentFrame % this.frameCount;
     this.srcX = this.currentFrame * this.runWidth;
@@ -96,7 +96,7 @@ class Player {
   }
 
   startAnimating() {
-    this.fpsInterval = 1000 / 10;
+    this.fpsInterval = 100;
     this.then = Date.now();
     this.startTime = this.then;
     this.draw();

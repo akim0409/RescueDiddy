@@ -12,7 +12,7 @@ canvas {
   position: relative;
   background: url(../images/canvas.png), url(../images/farbg.jpg) repeat-x;
   background-size: cover;
-  -webkit-animation: slide 6s linear infinite;
+  -webkit-animation: slide 7s linear infinite;
   margin: 0 auto;
 }
 
